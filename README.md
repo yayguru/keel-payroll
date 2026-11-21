@@ -2,7 +2,7 @@
 
 Keel Payroll is an agent for a small business that pays contractors in their own stablecoin. The owner types a sentence. The agent checks an allowlist and two caps, asks Textile FX what the local coin costs, and — only when a wallet is armed — approves USD₮, swaps, and transfers the proceeds. A session can be revoked in one transaction. After that, the agent stops.
 
-It is built for Celo's Agents Open for Business hackathon (Loops House, submissions close Mon 7 Dec 2026 09:00 GMT). The tracks are Stablecoin Corridors (Textile FX) and Altana Agent Wallets. Scoring is on Celo mainnet, chain 42220. This repository does not send mainnet transactions. The scripts that would are dry-run until you set `SEND=1` and `I_UNDERSTAND_MAINNET=1` on your own machine.
+It is built for Celo's Agents Open for Business hackathon (Loops House, submissions close Mon 7 Dec 2026 09:00 GMT). The tracks are Stablecoin Corridors (Textile FX) and Altana Agent Wallets. Scoring is on Celo mainnet, chain 42220. The mainnet run is recorded in `submission/LOOPS.md`. The scripts that send are dry-run until you set `SEND=1` and `I_UNDERSTAND_MAINNET=1` on your own machine.
 
 ## Architecture
 

@@ -24,6 +24,7 @@ async function main() {
       corridor,
       sellAmount: usdToUnits(usd),
       apiKey: process.env.TEXTILE_API_KEY,
+      payoutAmount: process.env.PAYOUT_LOCAL_UNITS ? BigInt(process.env.PAYOUT_LOCAL_UNITS) : undefined,
     },
     process.env.SEND === "1",
   );

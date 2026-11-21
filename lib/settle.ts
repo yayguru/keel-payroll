@@ -17,6 +17,8 @@ export type SettleInput = {
   corridor: Corridor;
   sellAmount: bigint;
   apiKey?: string;
+  /** Local-stable units to pay out. Defaults to the full buyAmount; the rest stays in the guard. */
+  payoutAmount?: bigint;
 };
 
 type Step = { label: string; to: Address; data: Hex };
@@ -85,7 +87,7 @@ export async function settlePayout(input: SettleInput, send: boolean) {
     data: encodeFunctionData({
       abi: erc20Abi,
       functionName: "transfer",
-      args: [input.payee, quoted.quote.buyAmount],
+      args: [input.payee, input.payoutAmount && input.payoutAmount < quoted.quote.buyAmount ? input.payoutAmount : quoted.quote.buyAmount],
     }),
   });
 
@@ -129,9 +131,11 @@ export async function settlePayout(input: SettleInput, send: boolean) {
       args: [step.to, step.data],
     });
     await publicClient.waitForTransactionReceipt({ hash });
+    // Public RPCs are load balanced; give every backend the new state before the next simulate.
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     hashes.push({ label: step.label, hash, explorer: explorerTx(hash) });
   }
-  return { simulated: false as const, rfqId: quoted.quote.rfqId, hashes };
+  return { simulated: false as const, rfqId: quoted.quote.rfqId, takerPays: quoted.quote.takerPays.toString(), buyAmount: quoted.quote.buyAmount.toString(), hashes };
 }
 
 export function assertSafeRpc(rpcUrl: string) {
