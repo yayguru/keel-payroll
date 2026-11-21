@@ -1,0 +1,18 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Keel Payroll",
+  "description": "Payroll agent for a small business. The owner says who to pay and in which country. Keel quotes USD₮ into that country's stablecoin on Textile FX, pays the allowlisted wallet from a capped session, and returns a receipt. Replace this hosted file's endpoints with the public URL before calling register, or use scripts/register-8004.ts which builds a data: URI.",
+  "image": "http://127.0.0.1:4477/icon.svg",
+  "services": [
+    { "name": "web", "endpoint": "http://127.0.0.1:4477/" },
+    {
+      "name": "A2A",
+      "endpoint": "http://127.0.0.1:4477/.well-known/agent-card.json",
+      "version": "0.3.0"
+    }
+  ],
+  "x402Support": false,
+  "active": true,
+  "supportedTrust": ["reputation"],
+  "registrations": []
+}

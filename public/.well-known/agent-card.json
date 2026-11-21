@@ -1,0 +1,19 @@
+{
+  "name": "Keel Payroll",
+  "description": "Payroll agent for a small business. Converts USD₮ to a local stablecoin on Textile FX and pays an allowlisted contractor.",
+  "url": "http://127.0.0.1:4477/",
+  "version": "0.1.0",
+  "protocolVersion": "0.3.0",
+  "capabilities": { "streaming": false, "pushNotifications": false },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "pay-contractors",
+      "name": "Pay contractors in local stablecoins",
+      "description": "Quote USD₮ into wBRL, wARS, cNGN, IDRX, wMXN, or wCOP on Textile FX and pay an allowlisted address inside a revocable cap.",
+      "tags": ["payroll", "fx", "celo", "textile"],
+      "examples": ["pay Maria (Brazil) $0.10 for the translation, Juan (Argentina) $0.20 for testing"]
+    }
+  ]
+}
