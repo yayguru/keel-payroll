@@ -17,7 +17,7 @@ and decides.
 
 | Suite | Test | Guards |
 |---|---|---|
-| desk | `pay_allowlisted` (smoke) | an allowlisted payee is paid, receipt lands in the Tape, the Today meter moves |
+| desk | `pay_allowlisted` (smoke) | an allowlisted payee is paid, receipt lands in Receipts, the Today meter moves |
 | desk | `pay_known_payee_without_country` | "pay Maria $0.10" works without repeating her country |
 | desk | `refuse_unknown_payee` (smoke) | a stranger is refused and nothing is paid |
 | desk | `daily_cap` | after the owner lowers the daily cap, the payment that would cross it is refused |
@@ -55,4 +55,24 @@ The brief tells the agent to fix the product, not the test, and never to loosen 
 ## Live targets
 
 - Desk (mock mode, no keys, nothing signed): https://keel-desk.merjkerm.workers.dev
-- Keel Jobs (worker sign-up page): https://keel-jobs.merjkerm.workers.dev
+  (staging: https://keel-desk-staging.merjkerm.workers.dev)
+- Keel Jobs (worker sign-up page): https://keel-jobs.merjkerm.workers.dev. Production is behind Cloudflare Turnstile,
+  which a test browser should not be solving, so Kane tests the staging copy
+  https://keel-jobs-staging.merjkerm.workers.dev (same code, its own D1 database, no captcha) and production is
+  promoted only after that passes.
+
+## What Kane caught (22 Nov 2026)
+
+1. **Desk:** "pay Maria $0.10 for the logo" got the help message instead of a payment. Maria is on the allowlist, but
+   the rule parser required a country in every payment. Fixed in `lib/parser.ts` + `lib/agent.ts`: the country
+   comes from the allowlist; strangers are still refused (2 new unit tests).
+2. **Jobs:** a wallet address pasted with a leading space was rejected. `maxlength="42"` cut the last character
+   before `trim()`. Fixed in `jobs/page.html`: room for stray spaces, whitespace stripped.
+3. **Jobs:** after an error, switching EN → PT translated the page but left the error in English. Fixed in
+   `jobs/page.html`: the shown message is re-translated on every language switch.
+
+Run log, including the runs that failed for reasons that were not app bugs (wrong tab names in my first tests,
+the production captcha, replays opening the originally recorded URL): [PROGRESS.md](PROGRESS.md).
+
+Gotcha worth knowing: a Kane replay opens the URL the test was *first recorded* on, even if you later edit `url:` in
+the frontmatter. `kane-gate.mjs` therefore always passes `--override-start-url` for suites with a target.
