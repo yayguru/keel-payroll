@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keel Jobs — tiny paid tasks on Celo</title>
+<meta name="description" content="Do a 3-minute task, get paid in your local stablecoin on Celo by Keel Payroll.">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+:root{--bg:#0d1110;--card:#161c1a;--line:#26302c;--text:#eef3f0;--mute:#9aa8a1;--acc:#35d07f;--warn:#fbcc5c;--err:#ff7a7a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:560px;margin:0 auto;padding:16px 16px 64px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 0 12px}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.02em}.brand span{color:var(--acc)}
+.langs button{background:none;border:1px solid var(--line);color:var(--mute);border-radius:8px;padding:4px 9px;font-size:13px;margin-left:4px}
+.langs button.on{color:var(--bg);background:var(--acc);border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+h1{font-size:24px;line-height:1.2;margin:8px 0}h2{font-size:17px;margin:0 0 8px}
+p{margin:6px 0}.mute{color:var(--mute);font-size:14px}.pill{display:inline-block;background:#1f2a25;color:var(--acc);border-radius:99px;padding:2px 10px;font-size:13px;font-weight:600}
+label{display:block;font-size:14px;color:var(--mute);margin:12px 0 4px}
+input,select,textarea{width:100%;background:#0f1513;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px;font:inherit}
+textarea{min-height:72px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);border-color:transparent}
+.task{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}.task>summary{cursor:pointer;font-weight:700;list-style:none}
+.task>summary::before{content:"▸ ";color:var(--acc)}.task[open]>summary::before{content:"▾ "}
+.check{display:flex;gap:10px;align-items:flex-start;margin:14px 0;color:var(--text);font-size:14px}.check input{width:20px;height:20px;margin-top:2px}
+button.go{width:100%;background:var(--acc);color:#04130b;border:0;border-radius:12px;padding:14px;font-weight:800;font-size:17px;margin-top:10px}
+button.go:disabled{opacity:.5}.msg{margin-top:10px;font-weight:600}.ok{color:var(--acc)}.bad{color:var(--err)}
+.quote{background:#0f1513;border-radius:10px;padding:10px;margin:8px 0;font-weight:700}
+.lines li{margin:4px 0}.feed{list-style:none;padding:0;margin:0}.feed li{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:8px 0;font-size:14px}
+.feed a{color:var(--acc)}.warn{border-color:#4a3f1c;background:#1c1a10}.warn p{color:var(--warn);font-size:14px}
+footer{color:var(--mute);font-size:13px;text-align:center;margin-top:24px}footer a{color:var(--mute)}
+.hp{position:absolute;left:-5000px}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand">Keel <span>Jobs</span></div>
+<div class="langs"><button data-l="en" class="on">EN</button><button data-l="pt">PT</button><button data-l="es">ES</button></div></header>
+
+<span class="pill" data-i="pill"></span>
+<h1 data-i="h1"></h1>
+<div class="card">
+<p data-i="intro1"></p><p data-i="intro2"></p><p data-i="intro3"></p>
+<p class="mute" data-i="pay"></p>
+</div>
+
+<form id="f" class="card" novalidate>
+<h2 data-i="you"></h2>
+<label for="handle" data-i="handle"></label><input id="handle" maxlength="60" autocomplete="nickname" required>
+<label for="country" data-i="country"></label>
+<select id="country" required><option value="" data-i="pick"></option>
+<option value="BR">🇧🇷 Brazil · wBRL</option><option value="MX">🇲🇽 Mexico · wMXN</option><option value="AR">🇦🇷 Argentina · wARS</option>
+<option value="CO">🇨🇴 Colombia · wCOP</option><option value="NG">🇳🇬 Nigeria · cNGN</option><option value="ID">🇮🇩 Indonesia · IDRX</option></select>
+<p class="mute" id="tokenNote"></p>
+<label for="wallet" data-i="wallet"></label><input id="wallet" maxlength="42" placeholder="0x…" autocomplete="off" spellcheck="false" required>
+<p class="mute" data-i="walletHint"></p>
+<input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+<h2 style="margin-top:18px" data-i="tasks"></h2>
+<details class="task" open><summary data-i="tA"></summary>
+<label for="a1" data-i="a1"></label><input id="a1" maxlength="300">
+<label for="a2" data-i="a2"></label><input id="a2" maxlength="300">
+<label for="a3" data-i="a3"></label><input id="a3" maxlength="300">
+<label for="a4" data-i="a4"></label><textarea id="a4" maxlength="600"></textarea>
+</details>
+<details class="task"><summary data-i="tB"></summary>
+<p class="mute" data-i="bIntro"></p><div class="quote" id="quote">—</div>
+<label for="b1" data-i="b1"></label><textarea id="b1" maxlength="400"></textarea>
+</details>
+<details class="task"><summary data-i="tC"></summary>
+<p class="mute" data-i="cIntro"></p>
+<ol class="lines"><li>Pay Maria $0.10 for the translation.</li><li>This payee is not on the allowlist.</li><li>Daily limit reached. Try again tomorrow.</li><li>Payment sent. View it on Celoscan.</li><li>Stop the agent now.</li></ol>
+<label for="c1" data-i="c1"></label><textarea id="c1" maxlength="600"></textarea>
+</details>
+
+<label class="check"><input type="checkbox" id="consent"><span data-i="consent"></span></label>
+<div class="cf-turnstile" data-sitekey="__SITEKEY__" data-theme="dark"></div>
+<button class="go" id="go" type="submit" data-i="submit"></button>
+<div class="msg" id="msg" role="status"></div>
+</form>
+
+<div class="card warn"><p data-i="safety"></p></div>
+
+<div class="card"><h2 data-i="paidH"></h2><ul class="feed" id="feed"><li class="mute" data-i="none"></li></ul></div>
+<footer>Keel Payroll · <a href="https://github.com/yayguru/keel-payroll" rel="noopener">source</a> · Celo mainnet</footer>
+</main>
+<script>
+const T={
+en:{pill:"Celo hackathon · real payouts",h1:"Do a 3-minute task. Get paid in your own stablecoin.",
+intro1:"Keel Payroll is an AI payroll agent built by OPDE (Spain) for Celo's “Agents Open for Business” hackathon.",
+intro2:"A business owner writes “pay Maria $0.10 for the translation” and Keel pays her in her local stablecoin on Celo, inside limits the owner can switch off.",
+intro3:"We need 2–3 real people from Brazil, Mexico, Argentina, Colombia, Nigeria or Indonesia to do tiny tasks. Your payment becomes a public Keel payout.",
+pay:"Pay: $0.10 per task you complete (up to $0.30), sent to your wallet in your country's stablecoin after OPDE reviews it, usually within 48 hours. One submission per wallet.",
+you:"About you",handle:"Name or handle (X, Telegram, Farcaster…)",country:"Country",pick:"Choose your country",wallet:"Your Celo wallet address",
+walletHint:"In MiniPay or Valora, copy your address — it starts with 0x and has 42 characters. We only need the address.",
+tasks:"Tasks — do 1, 2 or all 3",tA:"A · Rate the idea (3 questions + 1 idea)",a1:"Would a small business or freelancer you know pay people this way? Why?",
+a2:"Which wallet do you use? (MiniPay, Valora, other, none)",a3:"How are you usually paid for online work today?",a4:"One thing Keel should improve",
+tB:"B · Check our local price for $0.10",bIntro:"This is what Keel would pay you for $0.10 today:",b1:"Is that right for your country today? If not, what rate do you see (and where)?",
+tC:"C · Translate 5 short lines (optional)",cIntro:"Translate into Portuguese, Spanish or Bahasa Indonesia — whatever you speak natively:",c1:"Your translation (one line per item)",
+consent:"You may list my handle and country as a Keel user, next to the public payment link.",submit:"Send",
+safety:"Keel will never ask for your seed phrase, private key or any payment. You never send us money. Only your wallet address.",
+paidH:"Paid so far",none:"No payouts yet — be the first.",tokenNote:"You'll be paid in ",
+e:{handle:"Add your name or handle.",country:"Choose your country.",wallet:"That doesn't look like a Celo address (0x + 40 characters).",tasks:"Answer at least one task.",answers:"Please write a real answer.",wallet_used:"This wallet already sent a submission.",rate_limited:"Too many tries. Wait an hour.",captcha:"Please complete the check above.",db:"Server error, try again.",net:"Network error, try again."},
+ok:"Thanks! Saved. OPDE will review it and pay you on Celo. Keep this page — your payout will show under “Paid so far”."},
+pt:{pill:"Hackathon da Celo · pagamentos reais",h1:"Faça uma tarefa de 3 minutos. Receba na sua própria stablecoin.",
+intro1:"Keel Payroll é um agente de folha de pagamento com IA, criado por OPDE (Espanha) para o hackathon “Agents Open for Business” da Celo.",
+intro2:"O dono de um negócio escreve “pague $0,10 à Maria pela tradução” e o Keel paga na stablecoin local dela, na Celo, dentro de limites que o dono pode desligar.",
+intro3:"Precisamos de 2–3 pessoas reais do Brasil, México, Argentina, Colômbia, Nigéria ou Indonésia para tarefas pequenas. Seu pagamento vira um pagamento público do Keel.",
+pay:"Pagamento: $0,10 por tarefa concluída (até $0,30), na stablecoin do seu país, depois da revisão do OPDE, normalmente em até 48 horas. Um envio por carteira.",
+you:"Sobre você",handle:"Nome ou @ (X, Telegram, Farcaster…)",country:"País",pick:"Escolha seu país",wallet:"Endereço da sua carteira Celo",
+walletHint:"No MiniPay ou Valora, copie seu endereço — começa com 0x e tem 42 caracteres. Só precisamos do endereço.",
+tasks:"Tarefas — faça 1, 2 ou as 3",tA:"A · Avalie a ideia (3 perguntas + 1 sugestão)",a1:"Um pequeno negócio ou freelancer que você conhece pagaria pessoas assim? Por quê?",
+a2:"Qual carteira você usa? (MiniPay, Valora, outra, nenhuma)",a3:"Como você costuma receber por trabalho online hoje?",a4:"Uma coisa que o Keel deveria melhorar",
+tB:"B · Confira nosso preço local para $0,10",bIntro:"Isto é o que o Keel pagaria hoje por $0,10:",b1:"Está certo para o seu país hoje? Se não, qual cotação você vê (e onde)?",
+tC:"C · Traduza 5 frases curtas (opcional)",cIntro:"Traduza para português, espanhol ou bahasa indonésio — a sua língua nativa:",c1:"Sua tradução (uma linha por item)",
+consent:"Vocês podem mostrar meu @ e meu país como usuário do Keel, ao lado do link público do pagamento.",submit:"Enviar",
+safety:"O Keel nunca vai pedir sua frase-semente, chave privada ou qualquer pagamento. Você nunca nos envia dinheiro. Só o endereço da carteira.",
+paidH:"Já pagos",none:"Nenhum pagamento ainda — seja o primeiro.",tokenNote:"Você vai receber em ",
+e:{handle:"Coloque seu nome ou @.",country:"Escolha seu país.",wallet:"Isso não parece um endereço Celo (0x + 40 caracteres).",tasks:"Responda pelo menos uma tarefa.",answers:"Escreva uma resposta de verdade.",wallet_used:"Esta carteira já enviou uma resposta.",rate_limited:"Muitas tentativas. Espere uma hora.",captcha:"Complete a verificação acima.",db:"Erro no servidor, tente de novo.",net:"Erro de rede, tente de novo."},
+ok:"Obrigado! Salvo. O OPDE vai revisar e pagar você na Celo. Seu pagamento vai aparecer em “Já pagos”."},
+es:{pill:"Hackathon de Celo · pagos reales",h1:"Haz una tarea de 3 minutos. Cobra en tu propia stablecoin.",
+intro1:"Keel Payroll es un agente de nómina con IA, creado por OPDE (España) para el hackathon “Agents Open for Business” de Celo.",
+intro2:"El dueño de un negocio escribe “paga $0.10 a María por la traducción” y Keel le paga en su stablecoin local en Celo, dentro de límites que el dueño puede apagar.",
+intro3:"Buscamos 2–3 personas reales de Brasil, México, Argentina, Colombia, Nigeria o Indonesia para tareas pequeñas. Tu pago se convierte en un pago público de Keel.",
+pay:"Pago: $0.10 por tarea completada (hasta $0.30), en la stablecoin de tu país, después de la revisión de OPDE, normalmente en 48 horas. Un envío por billetera.",
+you:"Sobre ti",handle:"Nombre o @ (X, Telegram, Farcaster…)",country:"País",pick:"Elige tu país",wallet:"Dirección de tu billetera Celo",
+walletHint:"En MiniPay o Valora, copia tu dirección — empieza con 0x y tiene 42 caracteres. Solo necesitamos la dirección.",
+tasks:"Tareas — haz 1, 2 o las 3",tA:"A · Evalúa la idea (3 preguntas + 1 sugerencia)",a1:"¿Un pequeño negocio o freelancer que conoces pagaría así? ¿Por qué?",
+a2:"¿Qué billetera usas? (MiniPay, Valora, otra, ninguna)",a3:"¿Cómo te pagan normalmente por trabajo en línea hoy?",a4:"Una cosa que Keel debería mejorar",
+tB:"B · Revisa nuestro precio local para $0.10",bIntro:"Esto es lo que Keel te pagaría hoy por $0.10:",b1:"¿Es correcto para tu país hoy? Si no, ¿qué tipo de cambio ves (y dónde)?",
+tC:"C · Traduce 5 frases cortas (opcional)",cIntro:"Traduce al español, portugués o bahasa indonesio — tu idioma nativo:",c1:"Tu traducción (una línea por frase)",
+consent:"Pueden mostrar mi @ y mi país como usuario de Keel, junto al enlace público del pago.",submit:"Enviar",
+safety:"Keel nunca te pedirá tu frase semilla, clave privada ni ningún pago. Nunca nos envías dinero. Solo la dirección de tu billetera.",
+paidH:"Pagados",none:"Aún no hay pagos — sé el primero.",tokenNote:"Cobrarás en ",
+e:{handle:"Pon tu nombre o @.",country:"Elige tu país.",wallet:"Eso no parece una dirección de Celo (0x + 40 caracteres).",tasks:"Responde al menos una tarea.",answers:"Escribe una respuesta real.",wallet_used:"Esta billetera ya envió una respuesta.",rate_limited:"Demasiados intentos. Espera una hora.",captcha:"Completa la verificación de arriba.",db:"Error del servidor, intenta de nuevo.",net:"Error de red, intenta de nuevo."},
+ok:"¡Gracias! Guardado. OPDE lo revisará y te pagará en Celo. Tu pago aparecerá en “Pagados”."}};
+const TOK={BR:"wBRL",MX:"wMXN",AR:"wARS",CO:"wCOP",NG:"cNGN",ID:"IDRX"};
+let L=(navigator.language||"en").slice(0,2);L=T[L]?L:"en";
+const $=(id)=>document.getElementById(id);
+function render(){document.documentElement.lang=L==="pt"?"pt-BR":L;
+document.querySelectorAll("[data-i]").forEach(el=>{const v=T[L][el.dataset.i];if(typeof v==="string")el.textContent=v;});
+document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));tokenNote();}
+function tokenNote(){const c=$("country").value;$("tokenNote").textContent=c?T[L].tokenNote+TOK[c]+".":"";}
+document.querySelectorAll(".langs button").forEach(b=>b.onclick=()=>{L=b.dataset.l;render();});
+$("country").onchange=async()=>{tokenNote();document.querySelectorAll("details.task")[1].open=true;const c=$("country").value;if(!c){$("quote").textContent="—";return;}
+$("quote").textContent="…";try{const q=await (await fetch("/api/quote?c="+c)).json();
+$("quote").textContent=q.ok?`$0.10 ≈ ${q.local} ${q.token} (≈ ${q.local} ${q.fiat})`:`${q.token}: —`;}catch{$("quote").textContent="—";}};
+$("f").onsubmit=async(ev)=>{ev.preventDefault();const m=$("msg");m.className="msg";m.textContent="";
+const ans={a1:$("a1").value,a2:$("a2").value,a3:$("a3").value,a4:$("a4").value,b1:$("b1").value,c1:$("c1").value};
+const tasks=[];if(ans.a1||ans.a2||ans.a3||ans.a4)tasks.push("rate");if(ans.b1)tasks.push("rate_check");if(ans.c1)tasks.push("translate");
+const w=$("wallet").value.trim();const err=(k)=>{m.className="msg bad";m.textContent=T[L].e[k]||k;};
+if($("handle").value.trim().length<2)return err("handle");if(!$("country").value)return err("country");
+if(!/^0x[0-9a-fA-F]{40}$/.test(w))return err("wallet");if(!tasks.length)return err("tasks");
+const ts=document.querySelector("[name='cf-turnstile-response']");
+$("go").disabled=true;try{const r=await fetch("/api/submit",{method:"POST",headers:{"content-type":"application/json"},
+body:JSON.stringify({handle:$("handle").value,country:$("country").value,wallet:w,tasks,answers:ans,consent:$("consent").checked,website:$("website").value,turnstile:ts?ts.value:""})});
+const d=await r.json();if(d.ok){m.className="msg ok";m.textContent=T[L].ok;$("f").reset();tokenNote();}else{err(d.error);if(window.turnstile)turnstile.reset();}}
+catch{err("net");}finally{$("go").disabled=false;}};
+async function feed(){try{const d=await (await fetch("/api/paid")).json();if(!d.paid||!d.paid.length)return;const ul=$("feed");ul.textContent="";
+for(const p of d.paid){const li=document.createElement("li");const a=document.createElement("span");a.textContent=`${p.handle} · ${p.country}`;
+const b=document.createElement("span");b.textContent=`${p.amount_local||""} ${p.token} ($${p.amount_usd}) `;if(p.celoscan){const k=document.createElement("a");k.href=p.celoscan;k.rel="noopener";k.textContent="celoscan ↗";b.appendChild(k);}
+li.append(a,b);ul.appendChild(li);}}catch{}}
+render();feed();
+</script>
+</body>
+</html>

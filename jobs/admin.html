@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<title>Keel Jobs · admin</title>
+<style>body{margin:0;background:#0d1110;color:#eef3f0;font:15px/1.45 system-ui,sans-serif}main{max-width:900px;margin:0 auto;padding:16px}
+input,select,button{font:inherit;border-radius:8px;border:1px solid #26302c;background:#0f1513;color:#eef3f0;padding:8px}button{cursor:pointer}
+.row{border:1px solid #26302c;border-radius:12px;padding:12px;margin:10px 0;background:#161c1a}.mute{color:#9aa8a1;font-size:13px}
+.st{font-weight:700}.pending{color:#fbcc5c}.approved{color:#35d07f}.rejected{color:#ff7a7a}.paid{color:#7ab8ff}pre{white-space:pre-wrap;margin:6px 0;font-size:13px}
+a{color:#35d07f}</style></head><body><main>
+<h2>Keel Jobs · admin</h2>
+<p><input id="tok" type="password" placeholder="admin token" style="width:280px"> <select id="st"><option value="">all</option><option>pending</option><option>approved</option><option>rejected</option><option>paid</option></select> <button id="load">Load</button></p>
+<p class="mute">Approve sets the USD amount (0.05–0.30). Payouts run from the owner's machine with scripts/jobs-payout.ts — this page never touches keys.</p>
+<div id="list"></div>
+<script>
+const $=(i)=>document.getElementById(i);$("tok").value=sessionStorage.getItem("kj")||"";
+async function api(path,opt={}){sessionStorage.setItem("kj",$("tok").value);const r=await fetch(path,{...opt,headers:{"content-type":"application/json",authorization:"Bearer "+$("tok").value}});return r.json();}
+function el(tag,txt,cls){const e=document.createElement(tag);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e;}
+async function load(){const d=await api("/api/admin/submissions"+($("st").value?"?status="+$("st").value:""));const L=$("list");L.textContent="";
+if(!d.ok){L.append(el("p",d.error||"error"));return;}if(!d.submissions.length)L.append(el("p","No submissions.","mute"));
+for(const s of d.submissions){const r=el("div",null,"row");
+r.append(el("div",`#${s.id} · ${s.handle} · ${s.country} (${s.token}) · consent=${s.consent?"yes":"no"} · ${s.created_at}`));
+r.append(el("div",s.status+(s.amount_usd?` · $${s.amount_usd}`:"")+(s.amount_local?` · ${s.amount_local} ${s.token}`:""),"st "+s.status));
+r.append(el("div",s.wallet,"mute"));r.append(el("pre",JSON.stringify(s.answers,null,1)));
+if(s.tx_hash){const a=el("a","celoscan ↗");a.href="https://celoscan.io/tx/"+s.tx_hash;a.target="_blank";r.append(a);}
+if(s.status!=="paid"){const amt=el("input");amt.value=s.amount_usd||"0.10";amt.style.width="70px";
+const ap=el("button","Approve");ap.onclick=async()=>{await api("/api/admin/submissions/"+s.id,{method:"POST",body:JSON.stringify({action:"approve",amount_usd:amt.value})});load();};
+const rj=el("button","Reject");rj.onclick=async()=>{await api("/api/admin/submissions/"+s.id,{method:"POST",body:JSON.stringify({action:"reject"})});load();};
+const p=el("p");p.append("$ ",amt," ",ap," ",rj);r.append(p);}
+L.append(r);}}
+$("load").onclick=load;if($("tok").value)load();
+</script></main></body></html>

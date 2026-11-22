@@ -1,0 +1,16 @@
+# Reference config. The live Worker was uploaded through the Cloudflare API with
+# the same bindings; `npx wrangler deploy` from jobs/ reproduces it.
+name = "keel-jobs"
+main = "dist/worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "keel-jobs"
+database_id = "e4313a30-c15a-4887-b149-abec35a19ca1"
+
+[vars]
+# sha256 of the admin token. The token itself lives only on the owner's machine.
+ADMIN_TOKEN_SHA256 = "c9e3f16b2822551b60f67bfe476c246655b599d0b9953a48dd3529c0aa0cc918"
+# TURNSTILE_SITEKEY is a plain var; TURNSTILE_SECRET is a Worker secret (wrangler secret put).
