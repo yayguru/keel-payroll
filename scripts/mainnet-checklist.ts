@@ -35,16 +35,16 @@ type State = Record<string, any>;
 const state: State = existsSync(STATE) ? JSON.parse(readFileSync(STATE, "utf8")) : { txs: [] };
 const save = () => (mkdirSync(dirname(STATE), { recursive: true }), writeFileSync(STATE, JSON.stringify(state, null, 2)));
 
-async function confirm(label: string, hash: Hex) {
+async function confirm(label: string, hash: Hex, requireTag = true) {
   const receipt = await pub.waitForTransactionReceipt({ hash });
   const tx = await pub.getTransaction({ hash });
   const tag = fromDataSuffix(tx.input);
   const tagged = !!tag?.codes.includes(DEFAULT_ATTRIBUTION_CODE);
-  state.txs.push({ label, hash, from: tx.from, status: receipt.status, tagged, gasUsed: receipt.gasUsed.toString(), contract: receipt.contractAddress ?? undefined });
+  state.txs.push({ label, hash, from: tx.from, to: tx.to ?? undefined, status: receipt.status, tagged, gasUsed: receipt.gasUsed.toString(), contract: receipt.contractAddress ?? undefined });
   save();
   console.log(`${label}: ${receipt.status} tagged=${tagged} ${explorerTx(hash)}`);
   if (receipt.status !== "success") throw new Error(`${label} reverted`);
-  if (!tagged) throw new Error(`${label} is missing the attribution tag`);
+  if (!tagged && requireTag) throw new Error(`${label} is missing the attribution tag`);
   // forno is load balanced; let every backend see the new nonce before the next send.
   await new Promise((r) => setTimeout(r, 5000));
   return receipt;
@@ -109,7 +109,8 @@ async function fund() {
 
 async function record() {
   const [label, hash] = [process.argv[3], process.argv[4] as Hex];
-  await confirm(label, hash);
+  // Relay transactions (Altana) are built by the relay; record them without requiring our tag.
+  await confirm(label, hash, process.env.REQUIRE_TAG !== "0");
 }
 
 async function setUri() {

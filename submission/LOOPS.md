@@ -40,28 +40,32 @@ Attribution code: `celo_5bf71df0ebf6`. Every transaction below was sent from the
 - ERC-8004 agent id: **10091** on `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` ([register](https://celoscan.io/tx/0x21cccb9c8584b3b3f56756c0abe087466305c5e77116dc35f53d6a706c3cca47), [setAgentURI](https://celoscan.io/tx/0xce7904ca4c3307c5b9afc153d292986800a7c9b8d2b692b5eb01f7d8cb5603b1)).
 - Textile FX corridor, USD₮ → wBRL, rfq `rfq_0pWeaThqdEpxjlB5`: 1.00 USD₮ in, 5.3112 wBRL out, all three calls sent by the agent through `PayrollGuard.execute` — [approve](https://celoscan.io/tx/0x88fcabcf369a5b5d647774cf280f966d74e60111a6c3384bf621dd433618e5ee), [swap](https://celoscan.io/tx/0xc29ffef3b5fb988ae0d7df3439c52e20069b55dbd6de93ad6f71635db005f172), [payout 0.53 wBRL](https://celoscan.io/tx/0xce0df32bae1d1515cc221a89600b1da445feed1a6a8d504293396283f6be20ab). The firm quote used the keyless `takerProof`; Textile accepted the guard's ERC-1271 check.
 - This first payout went to the owner's own wallet as an end-to-end test. It is not the named-user payout. The remaining 4.78 wBRL stays in the guard for the first real contractor payout.
-- Altana grant and revoke: pending (relay fee for the grant is about 10.2 CELO).
+- Altana session on Celo mainnet, Altana wallet = the owner address (EIP-7702), session key = the agent key. Permissions: USD₮ spend cap 1.00 per day; calls only to USD₮, the Textile reactor and the six local stables; 7-day expiry; key registered in the Altana KeyStore (keyId `0x478eed8e3d62cb74b9062907a3161c1c0d85ac493134657b6d73fbe0232e4ace`). [grantSession](https://celoscan.io/tx/0x1d38e40fe15bd7913a883ae3f541dfb14cb0c3ac1c25b13536ebda9dd74c233c) (fee + KeyStore registration 19.67 CELO), then [revokeSession](https://celoscan.io/tx/0x2eb5628042c99bb0c030232307aa4f2c799f5fa2e27301c4ee6511f7bb847fe9) (0.085 CELO), one owner signature each. Script: `scripts/altana-session-run.ts`.
+- Both Altana transactions are built and sent by the Altana relay, so they carry no ERC-8021 tag: the SDK has no suffix hook (see `docs/RISKS.md`). Every transaction we sign ourselves, including all Textile calls through the guard, is tagged.
+- SDK note: on Celo mainnet the SDK also provisions the wallet on Ethereum. For an owner EOA that already has Celo history, the grant then fails with `Invalid auth item nonce, expected N, got 0`. Provisioning Celo alone (`provisionAlso: []`) fixed it.
 
-| Step | From | Tx |
-| --- | --- | --- |
-| swap.approve CELO | `0x093c…fd1c` | [0xe9c8460f…](https://celoscan.io/tx/0xe9c8460f8310fed55adc416818faa0c821c762a64003dc90d9accaa2f29e2545) |
-| swap CELO->USD₮ (Uniswap v3 0.01%) | `0x093c…fd1c` | [0x24372fbb…](https://celoscan.io/tx/0x24372fbbd6f86f6d7f1fea398afae5e08db0ad1e7cc5a61e3535ad1afbec88e7) |
-| guard.deploy | `0x093c…fd1c` | [0x9c2480f2…](https://celoscan.io/tx/0x9c2480f2ad7054e71b606456be8af2c393c6634595134a3ef9a2c2dde7fdf791) |
-| guard.setTarget 0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e | `0x093c…fd1c` | [0x364e0331…](https://celoscan.io/tx/0x364e0331b301174e440cb328872a10469342077af543a1582aa3d3407f82bfcf) |
-| guard.setTarget 0xa9AA0a64769cBed4d3B1Ceb4Df01CdE915C235b3 | `0x093c…fd1c` | [0x9fae106b…](https://celoscan.io/tx/0x9fae106b6914129e2887cd1666cbe470747946815b95443de600f198bb4243af) |
-| guard.setTarget 0xD76f5Faf6888e24D9F04Bf92a0c8B921FE4390e0 | `0x093c…fd1c` | [0xb887ad2a…](https://celoscan.io/tx/0xb887ad2a6ed097d64f4ff661b91744318fb3f0b42d2411e4c9a706acce12c0b2) |
-| guard.setTarget 0x0DC4F92879B7670e5f4e4e6e3c801D229129D90D | `0x093c…fd1c` | [0xf147972e…](https://celoscan.io/tx/0xf147972e894a2b456c2bd3775f376154c55c4f99f71729c1fa16263e3a0f40c6) |
-| guard.setTarget 0xF6829D7393dAe24509eb1E52eE8e572e2E271a4f | `0x093c…fd1c` | [0xa89076e2…](https://celoscan.io/tx/0xa89076e28cd06bb910ae9a24179a655499b675ffe12f0a44945b51ca055f2ad1) |
-| guard.setTarget 0x18Bc5bcC660cf2B9cE3cd51a404aFe1a0cBD3C22 | `0x093c…fd1c` | [0x020b7473…](https://celoscan.io/tx/0x020b747383be56b95f28ab07e88438d77b88842cafe4ddfb149bd4b43738d3a7) |
-| guard.setTarget 0x337E7456B420bD3481e7FA61fA9850343d610d34 | `0x093c…fd1c` | [0x0aeeba85…](https://celoscan.io/tx/0x0aeeba854f5673435dd42d0e9884bafc16f5a2ab545de4a79bff8e9ba956f913) |
-| guard.setTarget 0x8a1D45e102e886510e891d2Ec656a708991e2D76 | `0x093c…fd1c` | [0x64aedd6f…](https://celoscan.io/tx/0x64aedd6f1763bff83165f9d862f4943a1628b8e134523340079cf0d1a0ba6e4d) |
-| guard.setPayee 0x093c0AfA09fF4715595a79770447C60C4eCFfd1C (owner-controlled test payee) | `0x093c…fd1c` | [0x41efa3c3…](https://celoscan.io/tx/0x41efa3c311f5a581a976d64f3439117a84686689b2286cf11e8f3d974c9f6bbd) |
-| 8004.register agentId=10091 | `0x1b35…f389` | [0x21cccb9c…](https://celoscan.io/tx/0x21cccb9c8584b3b3f56756c0abe087466305c5e77116dc35f53d6a706c3cca47) |
-| 8004.setAgentURI agentId=10091 | `0x1b35…f389` | [0xce7904ca…](https://celoscan.io/tx/0xce7904ca4c3307c5b9afc153d292986800a7c9b8d2b692b5eb01f7d8cb5603b1) |
-| owner -> guard 1 USD₮ | `0x093c…fd1c` | [0xd89b056f…](https://celoscan.io/tx/0xd89b056f7b9b32d57cf592f9df74b9ce556c5da13e7b72110491e46238c21f09) |
-| textile.approve USD₮->reactor (via guard) | `0x1b35…f389` | [0x88fcabcf…](https://celoscan.io/tx/0x88fcabcf369a5b5d647774cf280f966d74e60111a6c3384bf621dd433618e5ee) |
-| textile.swap 1 USD₮->5.3112 wBRL (via guard) | `0x1b35…f389` | [0xc29ffef3…](https://celoscan.io/tx/0xc29ffef3b5fb988ae0d7df3439c52e20069b55dbd6de93ad6f71635db005f172) |
-| payout 0.53 wBRL guard->owner test wallet | `0x1b35…f389` | [0xce0df32b…](https://celoscan.io/tx/0xce0df32bae1d1515cc221a89600b1da445feed1a6a8d504293396283f6be20ab) |
+| Step | From | Tagged | Tx |
+| --- | --- | --- | --- |
+| swap.approve CELO | `0x093c…fd1c` | yes | [0xe9c8460f…](https://celoscan.io/tx/0xe9c8460f8310fed55adc416818faa0c821c762a64003dc90d9accaa2f29e2545) |
+| swap CELO->USD₮ (Uniswap v3 0.01%) | `0x093c…fd1c` | yes | [0x24372fbb…](https://celoscan.io/tx/0x24372fbbd6f86f6d7f1fea398afae5e08db0ad1e7cc5a61e3535ad1afbec88e7) |
+| guard.deploy | `0x093c…fd1c` | yes | [0x9c2480f2…](https://celoscan.io/tx/0x9c2480f2ad7054e71b606456be8af2c393c6634595134a3ef9a2c2dde7fdf791) |
+| guard.setTarget 0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e | `0x093c…fd1c` | yes | [0x364e0331…](https://celoscan.io/tx/0x364e0331b301174e440cb328872a10469342077af543a1582aa3d3407f82bfcf) |
+| guard.setTarget 0xa9AA0a64769cBed4d3B1Ceb4Df01CdE915C235b3 | `0x093c…fd1c` | yes | [0x9fae106b…](https://celoscan.io/tx/0x9fae106b6914129e2887cd1666cbe470747946815b95443de600f198bb4243af) |
+| guard.setTarget 0xD76f5Faf6888e24D9F04Bf92a0c8B921FE4390e0 | `0x093c…fd1c` | yes | [0xb887ad2a…](https://celoscan.io/tx/0xb887ad2a6ed097d64f4ff661b91744318fb3f0b42d2411e4c9a706acce12c0b2) |
+| guard.setTarget 0x0DC4F92879B7670e5f4e4e6e3c801D229129D90D | `0x093c…fd1c` | yes | [0xf147972e…](https://celoscan.io/tx/0xf147972e894a2b456c2bd3775f376154c55c4f99f71729c1fa16263e3a0f40c6) |
+| guard.setTarget 0xF6829D7393dAe24509eb1E52eE8e572e2E271a4f | `0x093c…fd1c` | yes | [0xa89076e2…](https://celoscan.io/tx/0xa89076e28cd06bb910ae9a24179a655499b675ffe12f0a44945b51ca055f2ad1) |
+| guard.setTarget 0x18Bc5bcC660cf2B9cE3cd51a404aFe1a0cBD3C22 | `0x093c…fd1c` | yes | [0x020b7473…](https://celoscan.io/tx/0x020b747383be56b95f28ab07e88438d77b88842cafe4ddfb149bd4b43738d3a7) |
+| guard.setTarget 0x337E7456B420bD3481e7FA61fA9850343d610d34 | `0x093c…fd1c` | yes | [0x0aeeba85…](https://celoscan.io/tx/0x0aeeba854f5673435dd42d0e9884bafc16f5a2ab545de4a79bff8e9ba956f913) |
+| guard.setTarget 0x8a1D45e102e886510e891d2Ec656a708991e2D76 | `0x093c…fd1c` | yes | [0x64aedd6f…](https://celoscan.io/tx/0x64aedd6f1763bff83165f9d862f4943a1628b8e134523340079cf0d1a0ba6e4d) |
+| guard.setPayee 0x093c0AfA09fF4715595a79770447C60C4eCFfd1C (owner-controlled test payee) | `0x093c…fd1c` | yes | [0x41efa3c3…](https://celoscan.io/tx/0x41efa3c311f5a581a976d64f3439117a84686689b2286cf11e8f3d974c9f6bbd) |
+| 8004.register agentId=10091 | `0x1b35…f389` | yes | [0x21cccb9c…](https://celoscan.io/tx/0x21cccb9c8584b3b3f56756c0abe087466305c5e77116dc35f53d6a706c3cca47) |
+| 8004.setAgentURI agentId=10091 | `0x1b35…f389` | yes | [0xce7904ca…](https://celoscan.io/tx/0xce7904ca4c3307c5b9afc153d292986800a7c9b8d2b692b5eb01f7d8cb5603b1) |
+| owner -> guard 1 USD₮ | `0x093c…fd1c` | yes | [0xd89b056f…](https://celoscan.io/tx/0xd89b056f7b9b32d57cf592f9df74b9ce556c5da13e7b72110491e46238c21f09) |
+| textile.approve USD₮->reactor (via guard) | `0x1b35…f389` | yes | [0x88fcabcf…](https://celoscan.io/tx/0x88fcabcf369a5b5d647774cf280f966d74e60111a6c3384bf621dd433618e5ee) |
+| textile.swap 1 USD₮->5.3112 wBRL (via guard) | `0x1b35…f389` | yes | [0xc29ffef3…](https://celoscan.io/tx/0xc29ffef3b5fb988ae0d7df3439c52e20069b55dbd6de93ad6f71635db005f172) |
+| payout 0.53 wBRL guard->owner test wallet | `0x1b35…f389` | yes | [0xce0df32b…](https://celoscan.io/tx/0xce0df32bae1d1515cc221a89600b1da445feed1a6a8d504293396283f6be20ab) |
+| altana.grantSession (relay tx; cap 1 USD₮/day, 8-contract allowlist, 7-day expiry, session key = agent) | `0xde31…c5b4` | no (relay) | [0x1d38e40f…](https://celoscan.io/tx/0x1d38e40fe15bd7913a883ae3f541dfb14cb0c3ac1c25b13536ebda9dd74c233c) |
+| altana.revokeSession (relay tx) | `0x5318…2faa` | no (relay) | [0x2eb56280…](https://celoscan.io/tx/0x2eb5628042c99bb0c030232307aa4f2c799f5fa2e27301c4ee6511f7bb847fe9) |
 
 ## Requirement checklist
 

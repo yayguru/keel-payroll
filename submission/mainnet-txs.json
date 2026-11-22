@@ -144,6 +144,24 @@
       "status": "success",
       "tagged": true,
       "gasUsed": "77768"
+    },
+    {
+      "label": "altana.grantSession (relay tx; cap 1 USD₮/day, 8-contract allowlist, 7-day expiry, session key = agent)",
+      "hash": "0x1d38e40fe15bd7913a883ae3f541dfb14cb0c3ac1c25b13536ebda9dd74c233c",
+      "from": "0xde3136c489b3371de8180d4c94c0238150e2c5b4",
+      "to": "0xaf140d0416a994aebb3fa6212b16ce6700f09751",
+      "status": "success",
+      "tagged": false,
+      "gasUsed": "1505113"
+    },
+    {
+      "label": "altana.revokeSession (relay tx)",
+      "hash": "0x2eb5628042c99bb0c030232307aa4f2c799f5fa2e27301c4ee6511f7bb847fe9",
+      "from": "0x53187eab26dad0e82598d4f7ac9c349665fb2faa",
+      "to": "0xaf140d0416a994aebb3fa6212b16ce6700f09751",
+      "status": "success",
+      "tagged": false,
+      "gasUsed": "154343"
     }
   ],
   "guard": "0xa8c05a073a02832bc9b3da469d52bebfdc422e64",
