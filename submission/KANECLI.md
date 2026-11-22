@@ -41,7 +41,7 @@ Kane also exposed problems in my own setup that were not app bugs (wrong tab nam
 reopening the originally recorded URL); those are logged honestly in kane/PROGRESS.md.
 
 **YouTube demo video URL**
-<fill>
+https://youtu.be/xJ8DTl5R8jw
 
 **Live URL**
 https://keel-desk.merjkerm.workers.dev (agent desk, mock mode: no keys, nothing is signed)
@@ -71,7 +71,7 @@ production desk. Scene sources: `/workspace/keel-video3/scenes/`, voice script `
 >
 > Kane caught 3 real bugs. Fixed, 9/9 green.
 >
-> <video>
+> https://youtu.be/xJ8DTl5R8jw
 > github.com/yayguru/keel-payroll
 > #KaneCLIHack
 
@@ -94,5 +94,5 @@ production desk. Scene sources: `/workspace/keel-video3/scenes/`, voice script `
 > English after switching the page to Portuguese. The agent fixed all three from Kane's reports, and the suite is
 > green on the live desk.
 >
-> Video: <video> · Code: https://github.com/yayguru/keel-payroll · Live: https://keel-desk.merjkerm.workers.dev
+> Video: https://youtu.be/xJ8DTl5R8jw · Code: https://github.com/yayguru/keel-payroll · Live: https://keel-desk.merjkerm.workers.dev
 > Built for the KaneCLI hackathon.
