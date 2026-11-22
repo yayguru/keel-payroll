@@ -48,7 +48,7 @@ https://keel-desk.merjkerm.workers.dev (agent desk, mock mode: no keys, nothing 
 Also: https://keel-jobs.merjkerm.workers.dev (worker sign-up page; Kane tests https://keel-jobs-staging.merjkerm.workers.dev)
 
 **Launch buzz (2+ public posts)**
-<X link>, <LinkedIn or HN link>
+https://x.com/AnneChouj/status/2124570578572976604, https://lnkd.in/p/e9kZ7bDq
 
 **Notes for judges (put in About or README)**
 No login is needed for either live URL. To run Kane yourself: `npm i -g @testmuai/kane-cli && kane-cli login`,
