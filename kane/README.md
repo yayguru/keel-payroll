@@ -76,3 +76,16 @@ the production captcha, replays opening the originally recorded URL): [PROGRESS.
 
 Gotcha worth knowing: a Kane replay opens the URL the test was *first recorded* on, even if you later edit `url:` in
 the frontmatter. `kane-gate.mjs` therefore always passes `--override-start-url` for suites with a target.
+
+## Kane evidence links
+
+Production desk, final run (all passed):
+- kill_switch: https://test-manager.lambdatest.com/projects/01M81W765THND0K7HYAX2KF5PN/test-cases/01M81WE4WHVASK1DFA2RWBMFYC/dashboard/share/US_DYP3F235NYSQIOPWY77VZWMF8QSA9TU2U3HMXFQA73EVYM4ZKFGH17YI0YHAW1PH?type=summary&agentView=true&fqdn=summary-page
+- pay_allowlisted: https://test-manager.lambdatest.com/projects/01M81W765THND0K7HYAX2KF5PN/test-cases/01M81WKX3TW09K3Q9C8RY3VV70/dashboard/share/US_Q1V46WQK4UV8QRHT5JD7XHSSNRSUL2TRF3V6QXHLOYT21UMCN0BA0IS8ZS98O7RM?type=summary&agentView=true&fqdn=summary-page
+- pay_known_payee_without_country: https://test-manager.lambdatest.com/projects/01M81W765THND0K7HYAX2KF5PN/test-cases/01M81XAWTGF44GYMCQCDXGR3V4/dashboard/share/US_K15ZNCUVHP5VJ8SBI1OPZ292Q2A33O0KZYDYSDNHVN4QK6DDQCS3P4NHTUK7F785?type=summary&agentView=true&fqdn=summary-page
+- refuse_unknown_payee: https://test-manager.lambdatest.com/projects/01M81W765THND0K7HYAX2KF5PN/test-cases/01M81XGV321DYRTMWMV2AZCJDV/dashboard/share/US_LHMZUZWKQWTD13ZZ02HWCSVJRDSEUR7702ALA2LYHGWJTVK3JG2L6WMF7W71A88I?type=summary&agentView=true&fqdn=summary-page
+- daily_cap: https://test-manager.lambdatest.com/projects/01M81W765THND0K7HYAX2KF5PN/test-cases/01M81W87Y2QS8E9PG5Q94W72CR/dashboard/share/US_RKEUHZP7R0YD0VAMB5A0DX8BQAFTC2DQ71JIQ9ILXPIJ27E8D0WV5Z18NOQJSFGU?type=summary&agentView=true&fqdn=summary-page
+
+The failing run that caught bug 1 (pay_known_payee_without_country, before the fix): https://test-manager.lambdatest.com/projects/01M81W765THND0K7HYAX2KF5PN/test-cases/01M81XAWTGF44GYMCQCDXGR3V4/dashboard/share/US_Y7MKI6BEI287NMB6UB36FUJIYIUTJK8RZ75HM2RFVVTKSX5OMU1FFC8J7LBK5ANW?type=summary&agentView=true&fqdn=summary-page
+
+Jobs suite (4/4 green on keel-jobs-staging) ran with `--local`, so it has no uploaded share links; logs are in PROGRESS.md.

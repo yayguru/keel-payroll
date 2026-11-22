@@ -35,3 +35,8 @@ kane-cli signed in via OAuth (user gadinamark1). No LT key, so no GitHub secrets
   frontmatter url. run3–run7 jobs replays hit PROD (old code + real Turnstile), which is why they kept failing.
   Fix: always pass --override-start-url (gate --url) for staging. run8 = jobs with --url staging.
 - run8 jobs on staging (override URL): 4/4 GREEN. Promoted keel-jobs (code only, bindings kept) and keel-desk to prod.
+- Video built: /workspace/keel-video3/keel-kane-demo.mp4 (69.5 s, ElevenLabs VO, burned captions, real Kane evidence + live prod desk clip).
+- run9 (prod desk, no override): 5/5 GREEN. Share links in kane/README.md.
+- Final: 9/9 green (desk 5/5 on prod + staging, jobs 4/4 on staging). Prod jobs verified by Playwright too
+  (EN/PT/ES error switches; " 0x+40" kept at 42 chars; captcha still required on prod).
+- submission/KANECLI.md updated with the real count (3) and specifics; X post 277 chars (URLs counted as 23).

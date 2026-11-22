@@ -22,7 +22,9 @@ jobs:
         id: kane
         uses: LambdaTest/kane-cli/integrations/github-action/kane-cli-browser-run@main
         with:
-          test-files: "kane/tests/**/*_test.md"
+          # Desk suite against the live desk. The jobs suite targets keel-jobs-staging via scripts/kane-gate.mjs
+          # (production jobs sits behind a captcha), so it runs in the staged deploy, not here.
+          test-files: "kane/tests/desk/*_test.md"
           parallel: "3"
           comment-on-pr: "true"
           artifact-name: keel-kane
