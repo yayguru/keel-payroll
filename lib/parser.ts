@@ -80,17 +80,19 @@ export function extractPayouts(text: string): Payout[] {
     const clause = raw.replace(/^(?:please\s+)?(?:pay|send)\s+/i, "");
     const match = clause.match(
       new RegExp(
-        String.raw`^(${NAME})\s+(?:\(([^)]+)\)|in\s+([A-Za-z]+))\s+\$?\s*(\d+(?:\.\d{1,2})?)\s*(?:usdt|usd|dollars?)?(?:\s+for\s+(.+))?$`,
+        String.raw`^(${NAME})\s+(?:(?:\(([^)]+)\)|in\s+([A-Za-z]+))\s+)?\$?\s*(\d+(?:\.\d{1,2})?)\s*(?:usdt|usd|dollars?)?(?:\s+for\s+(.+))?$`,
         "i",
       ),
     );
     if (!match) continue;
-    const country = corridorForCountry(match[2] ?? match[3] ?? "");
-    if (!country) continue;
+    const countryText = match[2] ?? match[3];
+    // No country given ("pay Maria $0.10"): leave it empty; the agent fills it from the allowlist.
+    const country = countryText ? corridorForCountry(countryText) : null;
+    if (countryText && !country) continue;
     const memo = (match[5] ?? "payroll").replace(/\.$/, "").trim();
     payouts.push({
       name: titleName(match[1]),
-      country: country.country,
+      country: country ? country.country : "",
       usd: normalizeUsd(match[4]),
       memo,
     });

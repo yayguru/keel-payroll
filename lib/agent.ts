@@ -52,11 +52,20 @@ export async function handleMessage(input: {
       return quote(state, parsed.intent.country, parsed.intent.usd, input.preview, parsed.parser, input.mode);
     case "run-rules":
       return runRules(input, state, parsed.parser);
-    case "pay":
-      if (parsed.intent.weekday) {
-        return rememberRule(state, parsed.intent.payouts, parsed.intent.weekday, input.now, parsed.parser, input.mode);
+    case "pay": {
+      // A known payee may be named without a country: use the one on the allowlist.
+      const payouts = parsed.intent.payouts.map((payout) =>
+        payout.country ? payout : { ...payout, country: findPayee(state, payout.name)?.country ?? "" },
+      );
+      const unknown = payouts.find((payout) => !payout.country);
+      if (unknown) {
+        return { ...base, reply: `${unknown.name} is not on the allowlist, so I sent nothing. Allow them with an address first.` };
       }
-      return pay(input, state, parsed.intent.payouts, parsed.parser);
+      if (parsed.intent.weekday) {
+        return rememberRule(state, payouts, parsed.intent.weekday, input.now, parsed.parser, input.mode);
+      }
+      return pay(input, state, payouts, parsed.parser);
+    }
     default:
       return { ...base, reply: UNKNOWN };
   }

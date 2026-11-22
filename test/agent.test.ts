@@ -115,4 +115,29 @@ describe("agent desk", () => {
     assert.equal(result.parser, "rules");
     assert.match(result.reply, /mock mode/);
   });
+
+  it("pays a known payee named without a country (caught by Kane)", async () => {
+    const result = await handleMessage({
+      message: "pay Maria $0.10 for the logo",
+      state: seedState(NOW),
+      now: NOW,
+      mode: "mock",
+      preview: previewFor,
+    });
+    assert.match(result.reply, /Maria · Brazil · \$0\.10/);
+    assert.equal(result.state.receipts.length, 1);
+    assert.equal(result.state.spentTodayUsd, "0.10");
+  });
+
+  it("still refuses a stranger named without a country", async () => {
+    const result = await handleMessage({
+      message: "pay Sofia $0.10 for the logo",
+      state: seedState(NOW),
+      now: NOW,
+      mode: "mock",
+      preview: previewFor,
+    });
+    assert.match(result.reply, /not on the allowlist/);
+    assert.equal(result.state.receipts.length, 0);
+  });
 });
