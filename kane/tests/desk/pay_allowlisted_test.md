@@ -16,7 +16,7 @@ Wait for Keel's reply.
 
 ## Check the receipt
 Verify Keel's reply mentions Maria, $0.10 and wBRL, and says no transaction was signed.
-Open the "Tape" tab if it is not visible and verify a receipt for Maria in wBRL is listed.
+In the "Receipts" panel, verify a receipt for Maria in wBRL is listed.
 
 ## Check the cap meter
-Open the "Controls" tab if needed. Verify the "Today" meter shows $0.10 spent of $5.00.
+In the "Caps" panel, verify the "Today" meter shows $0.10 spent of $5.00.

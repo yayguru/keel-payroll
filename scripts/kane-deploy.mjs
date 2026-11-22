@@ -17,8 +17,7 @@ const root = new URL("..", import.meta.url).pathname;
 const sh = (cmd, cwd = root) => execSync(cmd, { cwd, stdio: "inherit" });
 
 sh(T.build);
-const staging = `${T.name}-staging`;
-const out = execSync(`npx wrangler deploy --name ${staging}`, { cwd: `${root}${T.dir}`, encoding: "utf8" });
+const out = execSync("npx wrangler deploy --env staging", { cwd: `${root}${T.dir}`, encoding: "utf8" });
 const url = (out.match(/https:\/\/[^\s]+workers\.dev/) ?? [])[0];
 if (!url) { console.error(out); console.error("Could not read the staging URL."); process.exit(3); }
 console.log(`staging: ${url}`);

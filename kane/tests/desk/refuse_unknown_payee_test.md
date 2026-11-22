@@ -15,4 +15,4 @@ Type "pay Sofia (Brazil) $0.10 for testing" into the instruction box and send it
 
 ## Nothing was sent
 Verify the reply says Sofia is not on the allowlist and that nothing was sent.
-Open the "Tape" tab if needed and verify there is no receipt for Sofia.
+In the "Receipts" panel, verify there is no receipt for Sofia.

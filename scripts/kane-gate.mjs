@@ -20,7 +20,9 @@ const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : unde
 // Which source paths each suite guards. The agent reads this to know where to look when a suite fails.
 export const SUITES = {
   desk: { tests: "kane/tests/desk", sources: ["components/", "lib/", "app/", "desk-worker/"] },
-  jobs: { tests: "kane/tests/jobs", sources: ["jobs/"] },
+  // Production keel-jobs sits behind Cloudflare Turnstile, which a test browser must not solve. Kane checks the
+  // staging copy (same code, own D1 database, no captcha) and a deploy is promoted only after that passes.
+  jobs: { tests: "kane/tests/jobs", sources: ["jobs/"], url: "https://keel-jobs-staging.merjkerm.workers.dev" },
 };
 
 function changedSuites() {
@@ -59,9 +61,11 @@ function lastEvents(logPath, n = 40) {
 function runSuite(name) {
   return new Promise((resolve) => {
     const files = testFiles(SUITES[name].tests);
-    const cli = ["testrun", "run", ...files, "--agent", "--name", `keel-${name}`];
+    const cli = ["testrun", "run", ...files, "--agent", "--name", `keel-${name}`, "--parallel", process.env.KANE_PARALLEL ?? "3"];
     if (opt("--tags")) cli.push("--tags", opt("--tags"));
-    if (opt("--url")) cli.push("--override-start-url", opt("--url"), "--local");
+    // Replays open the URL a test was first recorded on, so a target is always passed explicitly.
+    const target = opt("--url") ?? SUITES[name].url;
+    if (target) cli.push("--override-start-url", target, "--local");
     const child = spawn("kane-cli", cli, {
       cwd: root,
       stdio: ["ignore", "pipe", "pipe"],
@@ -96,7 +100,7 @@ function runSuite(name) {
   });
 }
 
-console.log(`kane-gate: running ${suites.join(", ")}${opt("--url") ? ` against ${opt("--url")}` : ""}`);
+console.log(`kane-gate: running ${suites.map((n) => `${n}${(opt("--url") ?? SUITES[n]?.url) ? ` (${opt("--url") ?? SUITES[n].url})` : ""}`).join(", ")}`);
 const results = [];
 for (const name of suites) results.push(await runSuite(name));
 

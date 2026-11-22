@@ -1,5 +1,5 @@
 ---
-url: https://keel-jobs.merjkerm.workers.dev
+url: https://keel-jobs-staging.merjkerm.workers.dev
 tags: [jobs, smoke]
 max_steps: 25
 timeout: 180

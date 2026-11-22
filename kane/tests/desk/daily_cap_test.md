@@ -11,11 +11,11 @@ timeout: 240
 Open the page and wait until the instruction box is visible.
 
 ## Lower the daily cap
-Open the "Controls" tab if needed. Set the "Daily cap, USD" field to 0.25 and click "Set daily". Wait for Keel's reply.
+In the "Caps" panel, set the "Daily cap, USD" field to 0.25 and click "Set daily". Wait for Keel's reply.
 Verify the "Today" meter now shows a cap of $0.25.
 
 ## First payment fits
-Go to the "Chat" tab if needed. Send "pay Maria (Brazil) $0.10 for the translation" and wait for the reply.
+Type "pay Maria (Brazil) $0.10 for the translation" into the "Instruction" box, click "Send" and wait for the reply.
 Verify it is a simulated payment to Maria.
 
 ## Second payment is refused

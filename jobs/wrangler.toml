@@ -14,3 +14,13 @@ database_id = "e4313a30-c15a-4887-b149-abec35a19ca1"
 # sha256 of the admin token. The token itself lives only on the owner's machine.
 ADMIN_TOKEN_SHA256 = "c9e3f16b2822551b60f67bfe476c246655b599d0b9953a48dd3529c0aa0cc918"
 # TURNSTILE_SITEKEY is a plain var; TURNSTILE_SECRET is a Worker secret (wrangler secret put).
+
+# Staging copy that Kane tests before a deploy is promoted: own D1 database, no Turnstile keys
+# (the page then omits the widget and the API skips the check), no admin token.
+[env.staging]
+name = "keel-jobs-staging"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "keel-jobs-staging"
+database_id = "8b41ce10-ea69-4534-8f97-3cd67d3f0092"
