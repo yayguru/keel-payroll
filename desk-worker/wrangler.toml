@@ -1,0 +1,5 @@
+# Reference config for the public desk Worker (mock mode, no secrets, no bindings).
+name = "keel-desk"
+main = "dist/worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true

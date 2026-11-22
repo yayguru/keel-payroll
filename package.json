@@ -13,13 +13,19 @@
     "test:fork": "forge test --match-contract PayrollGuardFork",
     "fork-demo": "tsx scripts/fork-demo.ts",
     "anvil": "anvil --fork-url https://forno.celo.org --port 18545",
-    "fork-demo": "tsx scripts/fork-demo.ts",
     "register:8004": "tsx scripts/register-8004.ts",
     "session:grant": "tsx scripts/session-grant.ts",
     "session:grant:send": "tsx scripts/session-grant-send.ts",
     "session:revoke": "tsx scripts/session-revoke.ts",
     "smoke": "tsx scripts/smoke-tagged-tx.ts",
-    "settle": "tsx scripts/settle-payout.ts"
+    "settle": "tsx scripts/settle-payout.ts",
+    "kane": "node scripts/kane-gate.mjs",
+    "kane:smoke": "node scripts/kane-gate.mjs --tags smoke",
+    "kane:changed": "node scripts/kane-gate.mjs --changed",
+    "kane:design": "kane-cli context add kane/requirements && kane-cli context find && kane-cli design",
+    "build:desk-worker": "node desk-worker/build.mjs",
+    "deploy:desk": "node scripts/kane-deploy.mjs desk",
+    "deploy:jobs": "node scripts/kane-deploy.mjs jobs"
   },
   "dependencies": {
     "@altananetwork/sdk": "^1.1.0",

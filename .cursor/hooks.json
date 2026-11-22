@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [{ "command": "node scripts/kane-hook.mjs cursor", "loop_limit": 3 }]
+  }
+}

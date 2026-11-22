@@ -4,6 +4,13 @@ Keel Payroll is an agent for a small business that pays contractors in their own
 
 It is built for Celo's Agents Open for Business hackathon (Loops House, submissions close Mon 7 Dec 2026 09:00 GMT). The tracks are Stablecoin Corridors (Textile FX) and Altana Agent Wallets. Scoring is on Celo mainnet, chain 42220. The mainnet run is recorded in `submission/LOOPS.md`. The scripts that send are dry-run until you set `SEND=1` and `I_UNDERSTAND_MAINNET=1` on your own machine.
 
+
+## Kane gate (end-to-end checks that the agent can't skip)
+
+Every change the coding agent makes is checked by [Kane CLI](https://www.testmuai.com/kane-cli/) in a real
+browser before the agent may stop, and before a deploy is promoted. Failures go back to the agent as its next
+instruction. See [kane/README.md](kane/README.md).
+
 ## Architecture
 
 ```mermaid

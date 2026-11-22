@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "Stop": [{ "hooks": [{ "type": "command", "command": "node scripts/kane-hook.mjs claude", "timeout": 900 }] }]
+  }
+}

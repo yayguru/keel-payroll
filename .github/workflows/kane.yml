@@ -1,0 +1,30 @@
+# Kane CLI on every push to main, on PRs and nightly. Needs repo secrets LT_USERNAME and LT_ACCESS_KEY
+# (TestMu AI dashboard > Settings > Keys). Without them the job explains and exits.
+name: Kane end-to-end
+on:
+  push: { branches: [main] }
+  pull_request:
+  schedule: [{ cron: "0 6 * * *" }]
+  workflow_dispatch:
+permissions: { contents: read, pull-requests: write }
+jobs:
+  kane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KANE_CLI_CDP_TIMEOUT_MS: "90000"
+      HAS_KEYS: ${{ secrets.LT_USERNAME != '' && secrets.LT_ACCESS_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - if: env.HAS_KEYS != 'true'
+        run: echo "::notice::Add LT_USERNAME and LT_ACCESS_KEY secrets to run Kane CLI here."
+      - if: env.HAS_KEYS == 'true'
+        id: kane
+        uses: LambdaTest/kane-cli/integrations/github-action/kane-cli-browser-run@main
+        with:
+          test-files: "kane/tests/**/*_test.md"
+          parallel: "3"
+          comment-on-pr: "true"
+          artifact-name: keel-kane
+          username: ${{ secrets.LT_USERNAME }}
+          access-key: ${{ secrets.LT_ACCESS_KEY }}
