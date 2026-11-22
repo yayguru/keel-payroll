@@ -67,7 +67,8 @@ async function quote(country) {
 }
 
 async function verifyTurnstile(env, token, ip) {
-  if (!env.TURNSTILE_SECRET) return true;
+  // No sitekey means no widget on the page (staging/test deploys), so there is nothing to verify.
+  if (!env.TURNSTILE_SECRET || !env.TURNSTILE_SITEKEY) return true;
   if (!token) return false;
   const form = new FormData();
   form.append("secret", env.TURNSTILE_SECRET);
@@ -195,8 +196,13 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const sec = { "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-frame-options": "DENY" };
-    if (url.pathname === "/" && request.method === "GET")
-      return new Response(PAGE.replace("__SITEKEY__", env.TURNSTILE_SITEKEY || ""), { headers: { "content-type": "text/html; charset=utf-8", ...sec } });
+    if (url.pathname === "/" && request.method === "GET") {
+      // Staging/test deploys without Turnstile keys serve the page without the widget (the API skips the check too).
+      const page = env.TURNSTILE_SITEKEY
+        ? PAGE.replace("__SITEKEY__", env.TURNSTILE_SITEKEY)
+        : PAGE.replace(/<script src="https:\/\/challenges\.cloudflare\.com[^>]*><\/script>/, "").replace(/<div class="cf-turnstile"[^>]*><\/div>/, "");
+      return new Response(page, { headers: { "content-type": "text/html; charset=utf-8", ...sec } });
+    }
     if (url.pathname === "/admin" && request.method === "GET")
       return new Response(ADMIN, { headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex", ...sec } });
     if (url.pathname === "/api/quote") return json(await quote(String(url.searchParams.get("c") || "").toUpperCase()));

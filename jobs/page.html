@@ -52,7 +52,7 @@ footer{color:var(--mute);font-size:13px;text-align:center;margin-top:24px}footer
 <option value="BR">🇧🇷 Brazil · wBRL</option><option value="MX">🇲🇽 Mexico · wMXN</option><option value="AR">🇦🇷 Argentina · wARS</option>
 <option value="CO">🇨🇴 Colombia · wCOP</option><option value="NG">🇳🇬 Nigeria · cNGN</option><option value="ID">🇮🇩 Indonesia · IDRX</option></select>
 <p class="mute" id="tokenNote"></p>
-<label for="wallet" data-i="wallet"></label><input id="wallet" maxlength="42" placeholder="0x…" autocomplete="off" spellcheck="false" required>
+<label for="wallet" data-i="wallet"></label><input id="wallet" maxlength="64" placeholder="0x…" autocomplete="off" spellcheck="false" required>
 <p class="mute" data-i="walletHint"></p>
 <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 
@@ -136,25 +136,27 @@ e:{handle:"Pon tu nombre o @.",country:"Elige tu país.",wallet:"Eso no parece u
 ok:"¡Gracias! Guardado. OPDE lo revisará y te pagará en Celo. Tu pago aparecerá en “Pagados”."}};
 const TOK={BR:"wBRL",MX:"wMXN",AR:"wARS",CO:"wCOP",NG:"cNGN",ID:"IDRX"};
 let L=(navigator.language||"en").slice(0,2);L=T[L]?L:"en";
-const $=(id)=>document.getElementById(id);
+const $=(id)=>document.getElementById(id);let lastMsg="";
 function render(){document.documentElement.lang=L==="pt"?"pt-BR":L;
 document.querySelectorAll("[data-i]").forEach(el=>{const v=T[L][el.dataset.i];if(typeof v==="string")el.textContent=v;});
-document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));tokenNote();}
+document.querySelectorAll(".langs button").forEach(b=>b.classList.toggle("on",b.dataset.l===L));tokenNote();
+const m=$("msg");if(lastMsg)m.textContent=lastMsg==="ok"?T[L].ok:(T[L].e[lastMsg]||lastMsg);}
 function tokenNote(){const c=$("country").value;$("tokenNote").textContent=c?T[L].tokenNote+TOK[c]+".":"";}
 document.querySelectorAll(".langs button").forEach(b=>b.onclick=()=>{L=b.dataset.l;render();});
 $("country").onchange=async()=>{tokenNote();document.querySelectorAll("details.task")[1].open=true;const c=$("country").value;if(!c){$("quote").textContent="—";return;}
 $("quote").textContent="…";try{const q=await (await fetch("/api/quote?c="+c)).json();
 $("quote").textContent=q.ok?`$0.10 ≈ ${q.local} ${q.token} (≈ ${q.local} ${q.fiat})`:`${q.token}: —`;}catch{$("quote").textContent="—";}};
-$("f").onsubmit=async(ev)=>{ev.preventDefault();const m=$("msg");m.className="msg";m.textContent="";
+$("wallet").addEventListener("input",(ev)=>{const v=ev.target.value,c=v.replace(/\s+/g,"");if(c!==v)ev.target.value=c;});
+$("f").onsubmit=async(ev)=>{ev.preventDefault();const m=$("msg");m.className="msg";m.textContent="";lastMsg="";
 const ans={a1:$("a1").value,a2:$("a2").value,a3:$("a3").value,a4:$("a4").value,b1:$("b1").value,c1:$("c1").value};
 const tasks=[];if(ans.a1||ans.a2||ans.a3||ans.a4)tasks.push("rate");if(ans.b1)tasks.push("rate_check");if(ans.c1)tasks.push("translate");
-const w=$("wallet").value.trim();const err=(k)=>{m.className="msg bad";m.textContent=T[L].e[k]||k;};
+const w=$("wallet").value.replace(/\s+/g,"");const err=(k)=>{lastMsg=k;m.className="msg bad";m.textContent=T[L].e[k]||k;};
 if($("handle").value.trim().length<2)return err("handle");if(!$("country").value)return err("country");
 if(!/^0x[0-9a-fA-F]{40}$/.test(w))return err("wallet");if(!tasks.length)return err("tasks");
 const ts=document.querySelector("[name='cf-turnstile-response']");
 $("go").disabled=true;try{const r=await fetch("/api/submit",{method:"POST",headers:{"content-type":"application/json"},
 body:JSON.stringify({handle:$("handle").value,country:$("country").value,wallet:w,tasks,answers:ans,consent:$("consent").checked,website:$("website").value,turnstile:ts?ts.value:""})});
-const d=await r.json();if(d.ok){m.className="msg ok";m.textContent=T[L].ok;$("f").reset();tokenNote();}else{err(d.error);if(window.turnstile)turnstile.reset();}}
+const d=await r.json();if(d.ok){lastMsg="ok";m.className="msg ok";m.textContent=T[L].ok;$("f").reset();tokenNote();}else{err(d.error);if(window.turnstile)turnstile.reset();}}
 catch{err("net");}finally{$("go").disabled=false;}};
 async function feed(){try{const d=await (await fetch("/api/paid")).json();if(!d.paid||!d.paid.length)return;const ul=$("feed");ul.textContent="";
 for(const p of d.paid){const li=document.createElement("li");const a=document.createElement("span");a.textContent=`${p.handle} · ${p.country}`;
