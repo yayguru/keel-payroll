@@ -13,7 +13,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
-      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Install Foundry v1.10.0 (release tarball, checksum-verified)
+        run: |
+          set -euo pipefail
+          base=https://github.com/foundry-rs/foundry/releases/download/v1.10.0
+          f=foundry_v1.10.0_linux_amd64
+          curl -fsSL --retry 5 -o "$f.tar.gz" "$base/$f.tar.gz"
+          curl -fsSL --retry 5 -o "$f.sha256" "$base/$f.sha256"
+          sha256sum -c "$f.sha256"
+          mkdir -p "$HOME/.foundry/bin" && tar -xzf "$f.tar.gz" -C "$HOME/.foundry/bin"
+          echo "$HOME/.foundry/bin" >> "$GITHUB_PATH"
+      - run: forge --version
       - run: npm ci
       - run: npm test
       - run: forge test
