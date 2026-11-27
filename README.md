@@ -131,7 +131,7 @@ Identity registry: `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`. Reactor: `0xa9A
 
 ## Demo video
 
-A 2:11 walkthrough (1920×1080, English voice-over and captions) has been recorded. A public link will be added here once it is uploaded. Until then, the live demo above shows the same flow.
+Watch the 2:11 walkthrough (1920×1080, English voice-over and captions): https://youtu.be/6LUrPZFxTwk
 
 ## Demo script
 
