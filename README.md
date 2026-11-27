@@ -1,5 +1,9 @@
 # Keel Payroll
 
+**Live demo (public mock desk, no keys, never signs): https://keel-desk.merjkerm.workers.dev** · health: [`/healthz`](https://keel-desk.merjkerm.workers.dev/healthz)
+
+Try it: paste `pay Maria (Brazil) $0.10 for the translation, Juan (Argentina) $0.20 for testing` into the desk. You get live Textile FX previews and a simulated receipt.
+
 Keel Payroll is an agent for a small business that pays contractors in their own stablecoin. The owner types a sentence. The agent checks an allowlist and two caps, asks Textile FX what the local coin costs, and — only when a wallet is armed — approves USD₮, swaps, and transfers the proceeds. A session can be revoked in one transaction. After that, the agent stops.
 
 It is built for Celo's Agents Open for Business hackathon (Loops House, submissions close Mon 7 Dec 2026 09:00 GMT). The tracks are Stablecoin Corridors (Textile FX) and Altana Agent Wallets. Scoring is on Celo mainnet, chain 42220. The mainnet run is recorded in `submission/LOOPS.md`. The scripts that send are dry-run until you set `SEND=1` and `I_UNDERSTAND_MAINNET=1` on your own machine.
@@ -37,6 +41,19 @@ The public desk is mock mode. It still requests live Textile previews. It never 
 
 **Public mock mode.** The desk can run on a public URL with no keys. It requests Textile preview quotes only and writes simulated receipts. It does not sign or broadcast.
 
+## Quickstart (works offline)
+
+Node 20+ and [Foundry](https://getfoundry.sh) 1.10+ are required. After `npm ci`, nothing below needs network access, an RPC, or any secret.
+
+```bash
+git clone https://github.com/yayguru/keel-payroll.git && cd keel-payroll
+npm ci
+npm test          # TypeScript agent, parser, attribution and risk tests
+forge test        # PayrollGuard unit tests; the mainnet fork suite skips without CELO_FORK_RPC
+npm run build     # Next.js production build (fonts are self-hosted in app/fonts)
+npm run dev       # desk on http://127.0.0.1:4477 in mock mode
+```
+
 ## Run the desk
 
 ```bash
@@ -55,10 +72,13 @@ Maria and Juan in the mock are placeholder addresses, not real contractors. Repl
 Foundry 1.10 is required for the Solidity tests (`forge`, `anvil` on `PATH`).
 
 ```bash
-npm test
-npm run test:forge
-npm run test:fork
+npm test            # offline
+npm run test:forge  # offline: same as `forge test`; the fork suite reports SKIP
+npm run test:all    # both of the above
+npm run test:fork   # network: sets CELO_FORK_RPC (default https://forno.celo.org) and runs the fork suite
 ```
+
+The default commands never touch the network. The fork suite runs only when `CELO_FORK_RPC` is set; otherwise each fork test is skipped with the reason `set CELO_FORK_RPC to run Celo mainnet fork tests`.
 
 `test:fork` forks `https://forno.celo.org`. It checks that the Textile reactor and USD₮ are deployed, funds the guard with real USD₮ via `deal`, pays a payee, revokes, and shows the next execute revert.
 
@@ -90,7 +110,7 @@ Copy `.env.example`. Nothing in it is a secret. Do not commit `.env`.
 | `AGENT_PUBLIC_URL` | Origin used in the ERC-8004 file. |
 | `SEND`, `I_UNDERSTAND_MAINNET` | Both must be `1` before a script broadcasts to a non-loopback RPC. |
 
-Deploy the demo with `KEEL_MODE` unset. Vercel then serves the mock desk. Do not put mainnet keys in the Vercel project.
+Deploy the demo with `KEEL_MODE` unset. Vercel then serves the mock desk. Do not put mainnet keys in the Vercel project. The public demo above is the same desk built as a Cloudflare Worker (`npm run build:desk-worker`, see `desk-worker/`), mock mode only, with no keys.
 
 ## How the track rules are met
 
@@ -111,7 +131,7 @@ Identity registry: `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`. Reactor: `0xa9A
 
 ## Demo video
 
-The Celo / Loops House walkthrough is at [`submission/video/keel-demo.mp4`](submission/video/keel-demo.mp4) (2:11, 1920×1080, English voice-over and captions). A public URL will be added after it is uploaded. Nothing has been submitted yet.
+A 2:11 walkthrough (1920×1080, English voice-over and captions) has been recorded. A public link will be added here once it is uploaded. Until then, the live demo above shows the same flow.
 
 ## Demo script
 

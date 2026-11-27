@@ -14,22 +14,38 @@ interface IERC20Lite {
 /// @notice Runs against a Celo mainnet fork. Proves the real USD₮ contract
 ///         accepts a transfer from the guard after `deal`, and that the
 ///         Textile reactor is deployed at the documented address.
+///         Opt-in: skipped unless CELO_FORK_RPC is set, so plain `forge test`
+///         stays fully offline. Run with `npm run test:fork`
+///         (or `CELO_FORK_RPC=https://forno.celo.org forge test --match-contract Fork`).
 contract PayrollGuardForkTest is Test {
     address constant USDT = 0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e;
     address constant REACTOR = 0xa9AA0a64769cBed4d3B1Ceb4Df01CdE915C235b3;
 
+    bool internal forked;
+
     function setUp() public {
-        vm.createSelectFork(vm.rpcUrl("celo"));
+        string memory rpc = vm.envOr("CELO_FORK_RPC", string(""));
+        if (bytes(rpc).length == 0) return;
+        vm.createSelectFork(rpc);
+        forked = true;
     }
 
-    function testForkReactorAndUsdtAreLive() public {
+    modifier onlyFork() {
+        if (!forked) {
+            vm.skip(true, "set CELO_FORK_RPC to run Celo mainnet fork tests");
+            return;
+        }
+        _;
+    }
+
+    function testForkReactorAndUsdtAreLive() public onlyFork {
         assertGt(REACTOR.code.length, 0, "reactor missing");
         assertGt(USDT.code.length, 0, "usdt missing");
         emit log_string(IERC20Lite(USDT).symbol());
         assertEq(IERC20Lite(USDT).decimals(), 6);
     }
 
-    function testForkTaggedPayoutOfRealUsdt() public {
+    function testForkTaggedPayoutOfRealUsdt() public onlyFork {
         address owner = makeAddr("owner");
         uint256 agentKey = 0xA11CE;
         address agent = vm.addr(agentKey);

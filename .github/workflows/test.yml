@@ -1,0 +1,20 @@
+# Offline checks a reviewer runs from a clean clone: no secrets, no RPC.
+name: Tests
+on:
+  push: { branches: [main] }
+  pull_request:
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: npm ci
+      - run: npm test
+      - run: forge test
+      - run: npm run build

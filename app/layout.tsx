@@ -1,20 +1,25 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Mono, Outfit } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const outfit = Outfit({
-  subsets: ["latin"],
+// Self-hosted (app/fonts, SIL OFL 1.1) so the build never needs fonts.googleapis.com.
+const outfit = localFont({
+  src: "./fonts/Outfit-Variable-latin.woff2",
+  weight: "100 900",
   variable: "--font-outfit",
 });
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
+const fraunces = localFont({
+  src: "./fonts/Fraunces-Variable-latin.woff2",
+  weight: "100 900",
   variable: "--font-fraunces",
 });
 
-const plex = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const plex = localFont({
+  src: [
+    { path: "./fonts/IBMPlexMono-400-latin.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/IBMPlexMono-500-latin.woff2", weight: "500", style: "normal" },
+  ],
   variable: "--font-plex",
 });
 
