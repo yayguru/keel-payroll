@@ -109,6 +109,10 @@ Stablecoin Corridors and Altana are scored on execution, value, tagged onchain a
 
 Identity registry: `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`. Reactor: `0xa9AA0a64769cBed4d3B1Ceb4Df01CdE915C235b3`. USD₮: `0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e`.
 
+## Demo video
+
+The Celo / Loops House walkthrough is at [`submission/video/keel-demo.mp4`](submission/video/keel-demo.mp4) (2:11, 1920×1080, English voice-over and captions). A public URL will be added after it is uploaded. Nothing has been submitted yet.
+
 ## Demo script
 
 1. Open the desk. The header should say Mock desk, Celo 42220, Armed. Rate chips load from Textile or show an error if the preview API is down.
